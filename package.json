@@ -1,0 +1,19 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "tsx": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  }
+}
