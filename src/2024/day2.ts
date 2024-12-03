@@ -9,34 +9,45 @@ export function day2() {
     reports.push(levels);
   });
 
-  function part1(): number {
-    let count = 0;
-    const isSafeDifference = (diff: number): boolean => diff >= 1 && diff <= 3;
+  const isSafeDifference = (diff: number): boolean => diff >= 1 && diff <= 3;
 
-    reports.forEach(levels => {
-        let isConsistentTrend = true;
-        let isIncreasing = levels[0] > levels[1];
+  const check = (levels: number[]): { isValid: boolean, validTransitions: number } => {
+    if (levels.length < 2) {
+        return { isValid: false, validTransitions: 0 };
+    }
+
+    let isConsistentTrend = true;
+    let isIncreasing = levels[0] < levels[1];
         
-        const validTransitions = levels.reduce((acc, currentValue, index) => {
-                if (index === levels.length - 1 || !isConsistentTrend) return acc;
+    const validTransitions = levels.reduce((acc, currentValue, index) => {
+            if (index === levels.length - 1) return acc;
 
-                const diff = currentValue - levels[index + 1];
-                const isCurrentIncreasing = diff > 0;
-
-                if (isCurrentIncreasing !== isIncreasing) {
-                    isConsistentTrend = false;
-                    return acc;
-                }
-                
-                if (isSafeDifference(Math.abs(diff))) {
-                    return acc + 1;
-                }
-                
+            const diff = levels[index + 1] - currentValue;
+            const isCurrentIncreasing = diff > 0;
+            
+            if (isCurrentIncreasing !== isIncreasing) {
                 isConsistentTrend = false;
                 return acc;
-        }, 0); 
+            }
+            
+            if (isSafeDifference(Math.abs(diff))) {
+                return acc + 1;
+            }
+            
+            isConsistentTrend = false;
+            return acc;
+    }, 0);
 
-        if (isConsistentTrend && validTransitions === levels.length - 1) {
+    return { isValid: isConsistentTrend, validTransitions };
+}
+
+  function part1(): number {
+    let count = 0;
+
+    reports.forEach(levels => {
+        const {isValid, validTransitions } = check(levels);
+
+        if (isValid && validTransitions === levels.length - 1) {
             count++;
         }
     })
@@ -45,37 +56,6 @@ export function day2() {
   
   function part2(): number {
     let count = 0;
-    const isSafeDifference = (diff: number): boolean => diff >= 1 && diff <= 3;
-
-    const check = (levels: number[]): { isValid: boolean, validTransitions: number } => {
-        if (levels.length < 2) {
-            return { isValid: false, validTransitions: 0 };
-        }
-
-        let isConsistentTrend = true;
-        let isIncreasing = levels[0] < levels[1];
-            
-        const validTransitions = levels.reduce((acc, currentValue, index) => {
-                if (index === levels.length - 1) return acc;
-    
-                const diff = levels[index + 1] - currentValue;
-                const isCurrentIncreasing = diff > 0;
-                
-                if (isCurrentIncreasing !== isIncreasing) {
-                    isConsistentTrend = false;
-                    return acc;
-                }
-                
-                if (isSafeDifference(Math.abs(diff))) {
-                    return acc + 1;
-                }
-                
-                isConsistentTrend = false;
-                return acc;
-        }, 0);
-    
-        return { isValid: isConsistentTrend, validTransitions };
-    }
 
     reports.forEach(levels => {
         const {isValid, validTransitions } = check(levels);
